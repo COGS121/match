@@ -6,6 +6,7 @@ import csv, re
 #global variables
 RECORDS = {}
 TITLE = ""
+TOKEN = '\t'
 
 def isPID(pid):
     """
@@ -21,7 +22,7 @@ def getRecord(filename):
 
     print "Retrieving grades from \"" + filename + "\""
     sheet = open(filename, "r")
-    grades = csv.DictReader(sheet, delimiter='\t')
+    grades = csv.DictReader(sheet, delimiter=TOKEN)
     for grade in grades:
         content = {"Score": grade["Total"], "Comment": grade["Comments"]}
 
@@ -53,11 +54,11 @@ def setGrade(filename):
 
         # write appropriate header
         if header:
-            tmp += line + "\t"+TITLE+" Score\t"+TITLE+" Comment\n"
+            tmp += line+TOKEN+TITLE+" Score"+TOKEN+TITLE+" Comment\n"
             header = False
             continue
 
-        data = line.split("\t")  # grab specific part of current line
+        data = line.split(TOKEN)  # grab specific part of current line
 
         # if PID doesn't exist in submitted form do not write score or comment
         if data[0] not in RECORDS:
@@ -68,7 +69,7 @@ def setGrade(filename):
 
         # concatenate score and comment of this student
         current = RECORDS[data[0]]
-        tmp += line + "\t" + current["Score"] + "\t" + current["Comment"] + "\n"
+        tmp += line+TOKEN+current["Score"]+TOKEN+current["Comment"]+"\n"
     roster.close()
 
     # write concatenated string to target file. Override previous
